@@ -47,7 +47,7 @@ class RbacCached extends DbManager {
         $cached = $this->get($cacheKey);
         if ($cached === FALSE) {
             $cached = parent::checkAccess($userId, $permissionName);
-            $this->set($cacheKey, $cached, $this->lifetime);
+            $this->set($cacheKey, $cached);
         }
         return $cached;
     }
@@ -63,7 +63,7 @@ class RbacCached extends DbManager {
         $cached = $this->get($cacheKey);
         if ($cached === FALSE) {
             $cached = parent::checkAccessRecursive($user, $itemName, $params, $assignments);
-            $this->set($cacheKey, $cached, $this->lifetime);
+            $this->set($cacheKey, $cached);
         }
         return $cached;
     }
@@ -76,7 +76,7 @@ class RbacCached extends DbManager {
         $cached = $this->get($cacheKey);
         if ($cached === FALSE) {
             $cached = parent::getItem($name);
-            $this->set($cacheKey, $cached, $this->lifetime);
+            $this->set($cacheKey, $cached);
         }
         return $cached;
     }
@@ -89,7 +89,7 @@ class RbacCached extends DbManager {
         $cached = $this->get($cacheKey);
         if ($cached === FALSE) {
             $cached = parent::getAssignments($userId);
-            $this->set($cacheKey, $cached, $this->lifetime);
+            $this->set($cacheKey, $cached);
         }
         return $cached;
     }
