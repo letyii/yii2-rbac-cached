@@ -27,7 +27,7 @@ class RbacCached extends DbManager {
      * @var string the ID of the cache application component that is used to cache rbac.
      * Defaults to 'cache' which refers to the primary cache application component.
      */
-    public $cacheID='cache';
+    public $cacheId = 'cache';
 
     /**
      * @inheritdoc
@@ -44,10 +44,10 @@ class RbacCached extends DbManager {
             return parent::checkAccess($userId, $permissionName, $params);
 
         $cacheKey = $this->cachePrefix . 'checkAccess:' . $userId . ':' . $permissionName;
-        $cached = $this->get($cacheKey);
+        $cached = $this->getCache($cacheKey);
         if ($cached === FALSE) {
             $cached = parent::checkAccess($userId, $permissionName);
-            $this->cache($cacheKey, $cached);
+            $this->setCache($cacheKey, $cached);
         }
         return $cached;
     }
@@ -60,10 +60,10 @@ class RbacCached extends DbManager {
         if (!empty($params))
             $cacheKey .= ':' . current($params)->primaryKey;
 
-        $cached = $this->get($cacheKey);
+        $cached = $this->getCache($cacheKey);
         if ($cached === FALSE) {
             $cached = parent::checkAccessRecursive($user, $itemName, $params, $assignments);
-            $this->cache($cacheKey, $cached);
+            $this->setCache($cacheKey, $cached);
         }
         return $cached;
     }
@@ -73,10 +73,10 @@ class RbacCached extends DbManager {
      */
     protected function getItem($name) {
         $cacheKey = $this->cachePrefix . 'Item:' . $name;
-        $cached = $this->get($cacheKey);
+        $cached = $this->getCache($cacheKey);
         if ($cached === FALSE) {
             $cached = parent::getItem($name);
-            $this->cache($cacheKey, $cached);
+            $this->setCache($cacheKey, $cached);
         }
         return $cached;
     }
@@ -86,10 +86,10 @@ class RbacCached extends DbManager {
      */
     public function getAssignments($userId) {
         $cacheKey = $this->cachePrefix . 'Assignments:' . $userId;
-        $cached = $this->get($cacheKey);
+        $cached = $this->getCache($cacheKey);
         if ($cached === FALSE) {
             $cached = parent::getAssignments($userId);
-            $this->cache($cacheKey, $cached);
+            $this->setCache($cacheKey, $cached);
         }
         return $cached;
     }
@@ -100,7 +100,7 @@ class RbacCached extends DbManager {
      * @param $value
      * @return mixed
      */
-    protected function cache($key, $value)
+    protected function setCache($key, $value)
     {
         $cacheComponent  = $this->resolveCacheComponent();
         return $cacheComponent->set($key, $value, $this->lifetime);
@@ -111,18 +111,18 @@ class RbacCached extends DbManager {
      * @param $key
      * @return mixed
      */
-    protected function get($key)
+    protected function getCache($key)
     {
-        $cacheComponent  = $this->resolveCacheComponent();
+        $cacheComponent = $this->resolveCacheComponent();
         return $cacheComponent->get($key);
     }
 
     /**
      * Returns cache component configured as in cacheId
-     * @return CCache
+     * @return Cache
      */
     protected function resolveCacheComponent()
     {
-        return Yii::$app->{$this->cacheId};
+        return Yii::$app->get($this->cacheId);
     }
 }
