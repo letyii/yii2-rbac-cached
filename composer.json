@@ -1,0 +1,16 @@
+{
+    "name": "letyii/yii2-tinymce",
+    "description": "TinyMce for yii2 textarea",
+    "homepage": "https://github.com/letyii/yii2-rbac-cached",
+    "keywords": ["yii2","rbac", "cache"],
+    "license": "MIT",
+    "require": {
+        "php": ">=5.4",
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "letyii\\rbac-cached\\": ""
+        }
+    }
+}
