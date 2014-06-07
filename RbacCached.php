@@ -24,10 +24,10 @@ class RbacCached extends DbManager {
      */
     public $cachePrefix = 'RbacCached_';
     /**
-	 * @var string the ID of the cache application component that is used to cache rbac.
-	 * Defaults to 'cache' which refers to the primary cache application component.
-	 */
-	public $cacheID='cache';
+     * @var string the ID of the cache application component that is used to cache rbac.
+     * Defaults to 'cache' which refers to the primary cache application component.
+     */
+    public $cacheID='cache';
 
     /**
      * @inheritdoc
@@ -47,7 +47,7 @@ class RbacCached extends DbManager {
         $cached = $this->get($cacheKey);
         if ($cached === FALSE) {
             $cached = parent::checkAccess($userId, $permissionName);
-            $this->set($cacheKey, $cached);
+            $this->cache($cacheKey, $cached);
         }
         return $cached;
     }
@@ -63,7 +63,7 @@ class RbacCached extends DbManager {
         $cached = $this->get($cacheKey);
         if ($cached === FALSE) {
             $cached = parent::checkAccessRecursive($user, $itemName, $params, $assignments);
-            $this->set($cacheKey, $cached);
+            $this->cache($cacheKey, $cached);
         }
         return $cached;
     }
@@ -76,7 +76,7 @@ class RbacCached extends DbManager {
         $cached = $this->get($cacheKey);
         if ($cached === FALSE) {
             $cached = parent::getItem($name);
-            $this->set($cacheKey, $cached);
+            $this->cache($cacheKey, $cached);
         }
         return $cached;
     }
@@ -89,7 +89,7 @@ class RbacCached extends DbManager {
         $cached = $this->get($cacheKey);
         if ($cached === FALSE) {
             $cached = parent::getAssignments($userId);
-            $this->set($cacheKey, $cached);
+            $this->cache($cacheKey, $cached);
         }
         return $cached;
     }
