@@ -39,13 +39,6 @@ class RbacCached extends DbManager {
     /**
      * @inheritdoc
      */
-    public function init() {
-        parent::init();
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function checkAccess($userId, $permissionName, $params = []) {
         if (!empty($params))
             return parent::checkAccess($userId, $permissionName, $params);
@@ -92,6 +85,9 @@ class RbacCached extends DbManager {
      * @inheritdoc
      */
     public function getAssignments($userId) {
+        if (empty($userId))
+            return parent::getAssignments($userId);
+
         $cacheKey = 'Assignments:' . $userId;
         $cached = $this->getCache($cacheKey);
         if (empty($cached)) {
@@ -109,6 +105,8 @@ class RbacCached extends DbManager {
      */
     protected function setCache($key, $value) {
         $this->cachedData = $this->resolveCacheComponent()->get($this->cacheKeyName);
+        if (empty($this->cachedData))
+            $this->cachedData = [];
         $this->cachedData[$key] = $value;
         return $this->resolveCacheComponent()->set($this->cacheKeyName, $this->cachedData, $this->cacheDuration);
     }
@@ -119,12 +117,21 @@ class RbacCached extends DbManager {
      * @return mixed
      */
     protected function getCache($key) {
-        $cached = ArrayHelper::getColumn($this->cachedData, $key);
+        $cached = ArrayHelper::getValue($this->cachedData, $key);
         if (!isset($cached)) {
             $cacheData = $this->resolveCacheComponent()->get($this->cacheKeyName);
-            $cached = $this->cachedData[$key] = ArrayHelper::getColumn($cacheData, $key);
+            $cached = $this->cachedData[$key] = ArrayHelper::getValue($cacheData, $key);
         }
         return $cached;
+    }
+
+    /**
+     * Get cached value
+     * @param $key
+     * @return mixed
+     */
+    public static function deleteAllCache() {
+        return $this->resolveCacheComponent()->delete($this->cacheKeyName);
     }
 
     /**
@@ -134,5 +141,4 @@ class RbacCached extends DbManager {
     protected function resolveCacheComponent() {
         return Yii::$app->get($this->cache);
     }
-
 }
