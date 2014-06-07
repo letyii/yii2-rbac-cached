@@ -27,3 +27,7 @@ to the require section of your application's `composer.json` file.
     ],
 ]
 ~~~
+
+github: https://github.com/letyii/yii2-rbac-cached
+
+packagist: https://packagist.org/packages/letyii/yii2-rbac-cached
