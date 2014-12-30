@@ -130,7 +130,7 @@ class RbacCached extends DbManager {
      * @param $key
      * @return mixed
      */
-    public static function deleteAllCache() {
+    public function deleteAllCache() {
         return $this->resolveCacheComponent()->delete($this->cacheKeyName);
     }
 
